@@ -22,11 +22,11 @@ var constraints = {
 
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  	createCanvas(windowWidth, windowHeight);
 	pd = pixelDensity();
 	
-  capture = createCapture(constraints);
-  capture.hide();
+  	capture = createCapture(constraints);
+  	capture.hide();
 	capg = createGraphics(capture.width, capture.height);
 	capg.noFill();
 	
@@ -34,8 +34,8 @@ function setup() {
 	let myString = "PIXELDENSItY: " + capg.width;
 	button = createButton(myString);
 	button.size(width - 32, 100);
-  button.position(width/2 - button.width/2, height - button.height - 10);
-  button.mouseClicked(cropImage);
+  	button.position(width/2 - button.width/2, height - button.height - 10);
+  	button.mouseClicked(cropImage);
 	
 	width_margin = (width - cap_size) / 2;
 	height_margin = (height - cap_size) / 2;
@@ -67,10 +67,10 @@ function drawCaptureRetical()
 	for(let i = 1; i <= dimension; i++)
 	{
 		line( width_margin+spacing*i, height_margin + pad,
-				  width_margin+spacing*i, height_margin+cap_size - pad);
+		      width_margin+spacing*i, height_margin+cap_size - pad);
 		
 		line( width_margin + pad,          height_margin+spacing*i,
-				  width_margin+cap_size - pad, height_margin+spacing*i);
+		      width_margin+cap_size - pad, height_margin+spacing*i);
 	}
 }
 
@@ -79,7 +79,6 @@ function drawCaptureRetical()
 function cropImage()
 {
 	tappedScreen = !tappedScreen;
-	println("tappedScreen = " + tappedScreen);
 	
 	if(tappedScreen)
 	{
