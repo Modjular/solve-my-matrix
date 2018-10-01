@@ -23,7 +23,7 @@ var constraints = {
 
 function setup() {
   	createCanvas(windowWidth, windowHeight);
-	pd = pixelDensity();
+	pd = pixelDensity(2);
 	
   	capture = createCapture(constraints);
   	capture.hide();
