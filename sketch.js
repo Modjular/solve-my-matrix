@@ -1,5 +1,5 @@
 var capture;
-var cap_size = 320;
+var cap_size = 480;
 var width_margin;
 var height_margin;
 var dimension = 3; //check that this is never less than 2
@@ -22,16 +22,14 @@ var constraints = {
 
 
 function setup() {
+	pixelDensity(1);
   	createCanvas(windowWidth, windowHeight);
-	pd = pixelDensity(2);
 	
   	capture = createCapture(constraints);
   	capture.hide();
-	capg = createGraphics(capture.width, capture.height);
-	capg.noFill();
 	
 	// solve button
-	let myString = "PIXELDENSItY: " + pd;
+	let myString = "solve";
 	button = createButton(myString);
 	button.size(width - 32, 100);
   	button.position(width/2 - button.width/2, height - button.height - 10);
