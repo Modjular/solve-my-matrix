@@ -31,7 +31,7 @@ function setup() {
 	capg.noFill();
 	
 	// solve button
-	let myString = "PIXELDENSItY: " + pd";
+	let myString = "PIXELDENSItY: " + pd;
 	button = createButton(myString);
 	button.size(width - 32, 100);
   	button.position(width/2 - button.width/2, height - button.height - 10);
