@@ -4,12 +4,10 @@ var width_margin;
 var height_margin;
 var dimension = 3; //check that this is never less than 2
 var pad = 16;
-var pd;
-var capg;
-var screenshot;
 
 var tappedScreen = false;
 
+var screenshot;
 var button;
 
 var constraints = {
@@ -17,15 +15,16 @@ var constraints = {
 		facingMode: { exact: "environment"},
 		frameRate: 30
 	},
-	audio: false,
-}
+	audio: false
+};
 
 
 function setup() {
+    'use strict';
 	pixelDensity(1);
-  	createCanvas(windowWidth, windowHeight);
+    createCanvas(windowWidth, windowHeight);
 	
-  	capture = createCapture(constraints);
+    capture = createCapture(constraints);
   	capture.hide();
 	
 	// solve button
@@ -37,6 +36,11 @@ function setup() {
 	
 	width_margin = (width - cap_size) / 2;
 	height_margin = (height - cap_size) / 2;
+    
+    Tesseract.recognize("matrix_test1.jpeg")
+    .then(function(result){
+        console.log(result)
+    })
 }
 
 
