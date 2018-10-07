@@ -21,14 +21,18 @@ function img2mat(img, dim) {
 
                 // iterate through the symbols.
                 // add them if their conf is > 66
-                for (j = 0; j < dim; j++) {
+                let count = 0;
+                let j = 0;
+                while (count < dim) {
                     if (line.symbols[j.toString()].confidence > confidence_threshold) {
                         t_m[i].push(parseFloat(line.symbols[j.toString()].text));
+                        count++;
                     }
+                    j++;
                 }
             }
 
-
+            /* DEBUG
             t_m.forEach(function (row) {
                 console.log(row);
             })
@@ -39,6 +43,7 @@ function img2mat(img, dim) {
             BIGM.forEach(function (row) {
                 console.log(row);
             })
+            */
 
             return t_m
         })
