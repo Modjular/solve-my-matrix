@@ -4,7 +4,7 @@ function parseTessJob(job, dim) {
 
     var confidence_threshold = 55;
 
-    console.log("job: ");
+    console.log("parsing job... ");
     console.log(job);
     var t_m = [];
 
