@@ -1,20 +1,20 @@
 // Takes an image, attempts to grab a matrix from it
-function imageToMatrix(img, dimension){
+function img2mat(img, dim) {
 
-var newImg = img;
-var dim = dimension;
-var confidence_threshold = 55;
+    var confidence_threshold = 55;
 
-newImg.onload = function () {
-    Tesseract.recognize(newImg)
+    Tesseract.recognize(img)
+        .catch(function (e) {
+            console.log(e);
+            return;
+        })
         .then(function (result) {
 
             //console.log(result)
             var t_m = [];
 
             // find nums line by line
-            for (i = 0; i < dim
-                 ; i++) {
+            for (i = 0; i < dim; i++) {
                 var line = result.lines[i];
                 console.log(line);
                 t_m[i] = [];
@@ -42,8 +42,4 @@ newImg.onload = function () {
 
             return t_m
         })
-};
-
-//newImg.src = 'matrix_test1.jpeg';
-
 }
