@@ -9,6 +9,7 @@ var tappedScreen = false;
 
 var screenshot;
 var button;
+var filters = ['THRESHOLD', 'INVERT', 'GRAY'];
 
 var constraints = {
 	video: {
@@ -36,11 +37,6 @@ function setup() {
 	
 	width_margin = (width - cap_size) / 2;
 	height_margin = (height - cap_size) / 2;
-    
-    Tesseract.recognize("matrix_test1.jpeg")
-    .then(function(result){
-        console.log(result)
-    })
 }
 
 
@@ -89,9 +85,16 @@ function cropImage()
 
 		image(capture, 0, 0, width, width * capture.height / capture.width);
 		screenshot = get(width_margin,height_margin, cap_size,cap_size);
-		screenshot.filter(THRESHOLD);
+		screenshot.filter(INVERT);
 		image(screenshot,width_margin,height_margin);
 		//drawCaptureRetical();
+
+        // --- IMAGE DETECTION ---
+        // Inline seems like less of a hassle
+        // TRY{}
+        var matrix = img2mat(screenshot.canvas, dimension);
+        console.log(matrix);
+
 	}else{
 		capture.play();	
 	}
