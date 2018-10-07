@@ -52,6 +52,7 @@ function draw() {
 	}
 }
 
+
 //
 // Just for the UI, probably should be put elsewhere
 //
