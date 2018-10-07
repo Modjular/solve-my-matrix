@@ -1,6 +1,6 @@
 // Takes a TesseractJob, attempts to parse it into a matrix.
 // TODO: Robustification
-function parseTessJob(job) {
+function parseTessJob(job, dim) {
 
     var confidence_threshold = 55;
 

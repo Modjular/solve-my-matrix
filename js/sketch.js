@@ -102,10 +102,10 @@ function cropImage()
             return;
         })
         .progress(function(msg){
-            console.log("progress: " + msg);
+            console.log("progress: ", msg.recognize);
         })
         .then(function (result) {
-            var matrix = parseTessJob(result);
+            var matrix = parseTessJob(result, dimension);
             console.log(matrix);
         });
 
