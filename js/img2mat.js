@@ -2,8 +2,12 @@
 function img2mat(img, dim) {
 
     var confidence_threshold = 55;
+    var parameters = {
+        //tessedit_char_whitelist: '0123456789.'
+        classify_bln_numeric_mode: 1 // EDGE: decimals
+    }
 
-    Tesseract.recognize(img)
+    Tesseract.recognize(img, parameters)
         .catch(function (e) {
             console.log(e);
             return;
