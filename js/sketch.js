@@ -89,7 +89,7 @@ function cropImage()
 
 		image(capture, 0, 0, width, width * capture.height / capture.width);
 		screenshot = get(width_margin,height_margin, cap_size,cap_size);
-		screenshot.filter(GRAY);
+		screenshot.filter(THRESHOLD);
 		image(screenshot,width_margin,height_margin);
 		//drawCaptureRetical();
 	}else{
