@@ -18,9 +18,11 @@ var constraints = {
 	},
 	audio: false
 };
-var parameters = {
-    //tessedit_char_whitelist: '0123456789.'
-    classify_bln_numeric_mode: 1 // EDGE: decimals
+
+var digits_only = {
+    lang: 'eng',
+    tessedit_char_whitelist: '0123456789',
+    //classify_bln_numeric_mode: 1 // EDGE: decimals
 }
 
 
@@ -89,20 +91,19 @@ function cropImage()
 
 		image(capture, 0, 0, width, width * capture.height / capture.width);
 		screenshot = get(width_margin,height_margin, cap_size,cap_size);
-		//screenshot.filter(INVERT);
+		screenshot.filter(GREY);
 		image(screenshot,width_margin,height_margin);
 		//drawCaptureRetical();
+
 
         // --- IMAGE DETECTION ---
         // Inline seems like less of a hassle
         // TRY{}
-        Tesseract.recognize(screenshot.canvas, parameters)
+        Tesseract.recognize(screenshot.canvas, digits_only)
+        .progress(message => console.log(message))
         .catch(function (e) {
             console.log(e);
             return;
-        })
-        .progress(function(msg){
-            console.log("progress: ", msg.recognize);
         })
         .then(function (result) {
             var matrix = parseTessJob(result, dimension);
