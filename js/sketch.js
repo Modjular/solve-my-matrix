@@ -1,5 +1,6 @@
 var capture;
 var cap_size = 480;
+var text_size = 100;
 var width_margin;
 var height_margin;
 var dimension = 3; //check that this is never less than 2
@@ -30,6 +31,7 @@ function setup() {
     'use strict';
 	pixelDensity(1);
     createCanvas(windowWidth, windowHeight);
+    textAlign(CENTER, TOP);
 	
     capture = createCapture(constraints);
   	capture.hide();
@@ -108,6 +110,8 @@ function cropImage()
         .then(function (result) {
             var matrix = parseTessJob(result, dimension);
             console.log(matrix);
+
+            drawNums(matrix);
         });
 
 
@@ -116,4 +120,24 @@ function cropImage()
 	}
 	
 	return false;
+}
+
+
+
+// Displays a dimension x dimension
+// matrix over the grid
+// Nothing more nothing less
+function drawNums(nums)
+{
+	textSize(text_size);
+	fill(0);
+    noStroke();
+
+	for(let i = 0; i < dimension; i++)
+	{
+		for(let j =0; j < dimension; j++)
+		{
+			text(nums[i][j], width_margin + (cap_size/3 * i) + text_size/2, height_margin + (cap_size/3 * j));
+		}
+	}
 }
