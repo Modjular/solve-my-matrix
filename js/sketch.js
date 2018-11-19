@@ -1,3 +1,5 @@
+var VERSION = "v1.03"
+
 var capture;
 var cap_size = 480;
 var text_size = 100;
@@ -57,6 +59,7 @@ function setup() {
 
 
 function draw() {
+    text(VERSION, 10, 10);
     // Draw the live-camera if we haven't captured anything
 	if(!tappedScreen){ // This is a bad name
 		background(255,0,0);
