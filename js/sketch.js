@@ -59,13 +59,14 @@ function setup() {
 
 
 function draw() {
-    text(VERSION, 10, 10);
     // Draw the live-camera if we haven't captured anything
 	if(!tappedScreen){ // This is a bad name
 		background(255,0,0);
 		image(capture, 0, 0, width, width * capture.height / capture.width);
 		drawCaptureRetical();
 	}
+
+    text(VERSION, 20, 10);
 }
 
 
