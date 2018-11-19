@@ -12,7 +12,7 @@ function parseTessJob(job, dim, img) {
     var n = dim;
     var cell_w = w/m;
     var cell_h = h/n;
-    var symbols = getSymbols(result);
+    var symbols = getSymbols(job);
     var t_m = validateSymbols(m,n,cell_w, cell_h, symbols);
 
     return t_m
