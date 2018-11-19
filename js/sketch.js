@@ -12,7 +12,7 @@ var screenshot;
 var button;
 var filters = ['THRESHOLD', 'INVERT', 'GRAY'];
 
-var constraints = {
+var cam_constraints = {
 	video: {
 		facingMode: { exact: "environment"},
 		frameRate: 30
@@ -41,7 +41,7 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     textAlign(CENTER, TOP);
 	
-    capture = createCapture(constraints);
+    capture = createCapture(cam_constraints);
   	capture.hide();
 	
 	// "SOLVE" button
@@ -49,7 +49,7 @@ function setup() {
 	button = createButton(myString);
 	button.size(width - 32, 100);
   	button.position(width/2 - button.width/2, height - button.height - 10);
-  	button.mouseClicked(cropImage);
+  	button.mouseClicked(solveMyMatrix);
 	
 	width_margin = (width - cap_size) / 2;
 	height_margin = (height - cap_size) / 2;
@@ -70,9 +70,11 @@ function draw() {
 
 // When called, cuts the image within the cap_size area
 // This is where the magic happens
-function cropImage()
+// Definitely should be renamed
+//
+function solveMyMatrix()
 {
-	tappedScreen = !tappedScreen;
+	tappedScreen = !tappedScreen; // Janky toggle, sue me
 	
 	if(tappedScreen)
 	{
@@ -95,8 +97,7 @@ function cropImage()
 
 
         // --- IMAGE DETECTION ---
-        // Inline seems like less of a hassle
-        // TRY{}
+
         Tesseract.recognize(screenshot.canvas, digits_only)
         .progress(message => console.log(message))
         .catch(function (e) {
@@ -106,15 +107,15 @@ function cropImage()
         .then(function (result) {
 
             // Parse the result, worst case, a zero-matrix is returned
-            try{
-                var matrix = parseTessJob(result, dimension);
-                console.log(matrix);
-            }
-            catch (e){
-                console.log("ERROR: Could not parse matrix" + e);
-                matrix = testM;
-            }
+            var matrix = parseTessJob(result, dimension, screenshot.canvas);
+            console.log(matrix);
 
+
+            // rref()
+            // rrefParse()
+
+
+            // Draw result to screen
             drawNums(matrix);
         });
 
@@ -129,7 +130,7 @@ function cropImage()
 
 
 
-// ---  DRAWING ---
+// --- DRAWING ---
 
 
 // Displays a dimension x dimension
