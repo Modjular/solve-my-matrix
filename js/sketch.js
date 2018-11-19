@@ -26,6 +26,14 @@ var digits_only = {
     //classify_bln_numeric_mode: 1 // EDGE: decimals
 }
 
+var testM = [
+    [1,2,4],
+    [1,32,2],
+    [1,0,11]
+];
+
+var m_buffer = [];
+
 
 function setup() {
     'use strict';
@@ -36,7 +44,7 @@ function setup() {
     capture = createCapture(constraints);
   	capture.hide();
 	
-	// solve button
+	// "SOLVE" button
 	let myString = "solve";
 	button = createButton(myString);
 	button.size(width - 32, 100);
@@ -49,7 +57,8 @@ function setup() {
 
 
 function draw() {
-	if(!tappedScreen){
+    // Draw the live-camera if we haven't captured anything
+	if(!tappedScreen){ // This is a bad name
 		background(255,0,0);
 		image(capture, 0, 0, width, width * capture.height / capture.width);
 		drawCaptureRetical();
@@ -57,32 +66,10 @@ function draw() {
 }
 
 
-//
-// Just for the UI, probably should be put elsewhere
-//
-function drawCaptureRetical()
-{
-	stroke(255);
-	strokeWeight(8);
-	noFill();
-	
-	rect(width_margin,height_margin, width-width_margin*2, height-height_margin*2);
-	
-	strokeWeight(4);
-	let spacing = cap_size / dimension;
-	
-	for(let i = 1; i <= dimension; i++)
-	{
-		line( width_margin+spacing*i, height_margin + pad,
-		      width_margin+spacing*i, height_margin+cap_size - pad);
-		
-		line( width_margin + pad,          height_margin+spacing*i,
-		      width_margin+cap_size - pad, height_margin+spacing*i);
-	}
-}
 
 
 // When called, cuts the image within the cap_size area
+// This is where the magic happens
 function cropImage()
 {
 	tappedScreen = !tappedScreen;
@@ -91,9 +78,18 @@ function cropImage()
 	{
 		capture.pause();
 
+        /*
+            This part is a little janky
+            In effect we're:
+            - Screenshotting
+            - Grabbing the matrix sub-section
+            - Greyscaling the cropped screenshot
+            - Passing that crop to the TesseractJob
+        */
+
 		image(capture, 0, 0, width, width * capture.height / capture.width);
 		screenshot = get(width_margin,height_margin, cap_size,cap_size);
-		screenshot.filter(GREY);
+		screenshot.filter(GRAY);
 		image(screenshot,width_margin,height_margin);
 		//drawCaptureRetical();
 
@@ -108,8 +104,16 @@ function cropImage()
             return;
         })
         .then(function (result) {
-            var matrix = parseTessJob(result, dimension);
-            console.log(matrix);
+
+            // Parse the result, worst case, a zero-matrix is returned
+            try{
+                var matrix = parseTessJob(result, dimension);
+                console.log(matrix);
+            }
+            catch (e){
+                console.log("ERROR: Could not parse matrix" + e);
+                matrix = testM;
+            }
 
             drawNums(matrix);
         });
@@ -122,6 +126,10 @@ function cropImage()
 	return false;
 }
 
+
+
+
+// ---  DRAWING ---
 
 
 // Displays a dimension x dimension
@@ -139,5 +147,30 @@ function drawNums(nums)
 		{
 			text(nums[i][j], width_margin + (cap_size/3 * i) + text_size/2, height_margin + (cap_size/3 * j));
 		}
+	}
+}
+
+
+//
+// Just for the UI, probably should be put elsewhere
+//
+function drawCaptureRetical()
+{
+	stroke(255);
+	strokeWeight(8);
+	noFill();
+
+	rect(width_margin,height_margin, width-width_margin*2, height-height_margin*2);
+
+	strokeWeight(4);
+	let spacing = cap_size / dimension;
+
+	for(let i = 1; i <= dimension; i++)
+	{
+		line( width_margin+spacing*i, height_margin + pad,
+		      width_margin+spacing*i, height_margin+cap_size - pad);
+
+		line( width_margin + pad,          height_margin+spacing*i,
+		      width_margin+cap_size - pad, height_margin+spacing*i);
 	}
 }
