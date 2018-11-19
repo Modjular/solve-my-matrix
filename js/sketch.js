@@ -144,9 +144,10 @@ function drawNums(nums)
 
 	for(let i = 0; i < dimension; i++)
 	{
-		for(let j =0; j < dimension; j++)
+		for(let j = 0; j < dimension; j++)
 		{
-			text(nums[i][j], width_margin + (cap_size/3 * i) + text_size/2, height_margin + (cap_size/3 * j));
+            // nums is organized nums[row][col], so i & j must be swapped
+			text(nums[i][j], width_margin + (cap_size/3 * j) + text_size/2, height_margin + (cap_size/3 * i));
 		}
 	}
 }
