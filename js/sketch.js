@@ -12,7 +12,7 @@ var screenshot;
 var button;
 var filters = ['THRESHOLD', 'INVERT', 'GRAY'];
 
-var constraints = {
+var cam_constraints = {
 	video: {
 		facingMode: { exact: "environment"},
 		frameRate: 30
@@ -26,6 +26,14 @@ var digits_only = {
     //classify_bln_numeric_mode: 1 // EDGE: decimals
 }
 
+var testM = [
+    [1,2,4],
+    [1,32,2],
+    [1,0,11]
+];
+
+var m_buffer = [];
+
 
 function setup() {
     'use strict';
@@ -33,15 +41,15 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     textAlign(CENTER, TOP);
 	
-    capture = createCapture(constraints);
+    capture = createCapture(cam_constraints);
   	capture.hide();
 	
-	// solve button
+	// "SOLVE" button
 	let myString = "solve";
 	button = createButton(myString);
 	button.size(width - 32, 100);
   	button.position(width/2 - button.width/2, height - button.height - 10);
-  	button.mouseClicked(cropImage);
+  	button.mouseClicked(solveMyMatrix);
 	
 	width_margin = (width - cap_size) / 2;
 	height_margin = (height - cap_size) / 2;
@@ -49,7 +57,8 @@ function setup() {
 
 
 function draw() {
-	if(!tappedScreen){
+    // Draw the live-camera if we haven't captured anything
+	if(!tappedScreen){ // This is a bad name
 		background(255,0,0);
 		image(capture, 0, 0, width, width * capture.height / capture.width);
 		drawCaptureRetical();
@@ -57,50 +66,38 @@ function draw() {
 }
 
 
-//
-// Just for the UI, probably should be put elsewhere
-//
-function drawCaptureRetical()
-{
-	stroke(255);
-	strokeWeight(8);
-	noFill();
-	
-	rect(width_margin,height_margin, width-width_margin*2, height-height_margin*2);
-	
-	strokeWeight(4);
-	let spacing = cap_size / dimension;
-	
-	for(let i = 1; i <= dimension; i++)
-	{
-		line( width_margin+spacing*i, height_margin + pad,
-		      width_margin+spacing*i, height_margin+cap_size - pad);
-		
-		line( width_margin + pad,          height_margin+spacing*i,
-		      width_margin+cap_size - pad, height_margin+spacing*i);
-	}
-}
 
 
 // When called, cuts the image within the cap_size area
-function cropImage()
+// This is where the magic happens
+// Definitely should be renamed
+//
+function solveMyMatrix()
 {
-	tappedScreen = !tappedScreen;
+	tappedScreen = !tappedScreen; // Janky toggle, sue me
 	
 	if(tappedScreen)
 	{
 		capture.pause();
 
+        /*
+            This part is a little janky
+            In effect we're:
+            - Screenshotting
+            - Grabbing the matrix sub-section
+            - Greyscaling the cropped screenshot
+            - Passing that crop to the TesseractJob
+        */
+
 		image(capture, 0, 0, width, width * capture.height / capture.width);
 		screenshot = get(width_margin,height_margin, cap_size,cap_size);
-		screenshot.filter(GREY);
+		screenshot.filter(GRAY);
 		image(screenshot,width_margin,height_margin);
 		//drawCaptureRetical();
 
 
         // --- IMAGE DETECTION ---
-        // Inline seems like less of a hassle
-        // TRY{}
+
         Tesseract.recognize(screenshot.canvas, digits_only)
         .progress(message => console.log(message))
         .catch(function (e) {
@@ -108,9 +105,17 @@ function cropImage()
             return;
         })
         .then(function (result) {
-            var matrix = parseTessJob(result, dimension);
+
+            // Parse the result, worst case, a zero-matrix is returned
+            var matrix = parseTessJob(result, dimension, screenshot.canvas);
             console.log(matrix);
 
+
+            // rref()
+            // rrefParse()
+
+
+            // Draw result to screen
             drawNums(matrix);
         });
 
@@ -122,6 +127,10 @@ function cropImage()
 	return false;
 }
 
+
+
+
+// --- DRAWING ---
 
 
 // Displays a dimension x dimension
@@ -139,5 +148,30 @@ function drawNums(nums)
 		{
 			text(nums[i][j], width_margin + (cap_size/3 * i) + text_size/2, height_margin + (cap_size/3 * j));
 		}
+	}
+}
+
+
+//
+// Just for the UI, probably should be put elsewhere
+//
+function drawCaptureRetical()
+{
+	stroke(255);
+	strokeWeight(8);
+	noFill();
+
+	rect(width_margin,height_margin, width-width_margin*2, height-height_margin*2);
+
+	strokeWeight(4);
+	let spacing = cap_size / dimension;
+
+	for(let i = 1; i <= dimension; i++)
+	{
+		line( width_margin+spacing*i, height_margin + pad,
+		      width_margin+spacing*i, height_margin+cap_size - pad);
+
+		line( width_margin + pad,          height_margin+spacing*i,
+		      width_margin+cap_size - pad, height_margin+spacing*i);
 	}
 }

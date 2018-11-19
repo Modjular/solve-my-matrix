@@ -1,5 +1,5 @@
 // Reduces matrix 'original' to RREF form (if possible)
-// non-destructive, returns a new matrix
+// non-destructive, returns an operations list
 // Reference: https://www.csun.edu/~panferov/math262/262_rref.pdf
 function rref(original) {
 
